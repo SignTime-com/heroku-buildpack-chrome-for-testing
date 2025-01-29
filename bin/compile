@@ -59,7 +59,7 @@ VERSION="$(curl --silent --show-error --fail --retry 3 --retry-connrefused --con
 echo "Resolved $CHANNEL version $VERSION" | indent
 
 echo "Downloading Chrome" | indent
-ZIP_URL="https://storage.googleapis.com/chrome-for-testing-public/$VERSION/linux64/chrome-linux64.zip"
+ZIP_URL="https://storage.googleapis.com/chrome-for-testing-public/$VERSION/linux64/chrome-headless-shell-linux64.zip"
 ZIP_LOCATION="$INSTALL_DIR/chrome.zip"
 curl --silent --show-error --fail --retry 3 --retry-connrefused --connect-timeout 10 -o "${ZIP_LOCATION}" "${ZIP_URL}" | indent
 unzip -q -o "$ZIP_LOCATION" -d "$INSTALL_DIR" | indent
@@ -76,11 +76,10 @@ source "$BUILDPACK_DIR/bin/install-chrome-dependencies"
 
 echo "Adding executables to PATH" | indent
 mkdir -p "$BUILD_DIR/.profile.d"
-echo "export PATH=\$HOME/.chrome-for-testing/chrome-linux64:\$HOME/.chrome-for-testing/chromedriver-linux64:\$PATH" >> "$BUILD_DIR/.profile.d/chrome-for-testing.sh"
+echo "export PATH=\$HOME/.chrome-for-testing/chrome-headless-shell-linux64:\$HOME/.chrome-for-testing/chromedriver-linux64:\$PATH" >> "$BUILD_DIR/.profile.d/chrome-for-testing.sh"
 
 # Verify the executables are actually present
-export PATH="$BUILD_DIR/.chrome-for-testing/chrome-linux64:$BUILD_DIR/.chrome-for-testing/chromedriver-linux64:$PATH"
-which chrome | indent
+export PATH="$BUILD_DIR/.chrome-for-testing/chrome-headless-shell-linux64:$BUILD_DIR/.chrome-for-testing/chromedriver-linux64:$PATH"
 which chromedriver | indent
 
-echo "Installed Chrome for Testing $CHANNEL version $VERSION" | indent
+echo "Installed Chrome headless shell for Testing $CHANNEL version $VERSION" | indent
