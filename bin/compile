@@ -36,9 +36,11 @@ topic "Installing Chrome for Testing"
 INSTALL_DIR="$BUILD_DIR/.chrome-for-testing"
 mkdir -p "$INSTALL_DIR"
 
-# Detect if the old config var is still used
+# Detect requested version or default to latest release
 if [ -f "$ENV_DIR/CHROMEDRIVER_VERSION" ]; then
-  error "This buildpack no longer supports CHROMEDRIVER_VERSION config var and must be removed to continue, because this buildpack now installs compatible versions of Chrome & Chromedriver. GOOGLE_CHROME_CHANNEL can be used to set Stable (default), Beta, Dev, or Canary."
+  VERSION=$(cat "$ENV_DIR/CHROMEDRIVER_VERSION")
+else
+  VERSION="$(curl --silent --show-error --fail --retry 3 --retry-connrefused --connect-timeout 10 "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$CHANNEL")"
 fi
 
 # Detect if Chrome is already installed
@@ -55,7 +57,6 @@ else
 fi
 # The current version endpoint requires ALL CAPS.
 CHANNEL="$(echo -n "$channel" | awk '{ print toupper($0) }')"
-VERSION="$(curl --silent --show-error --fail --retry 3 --retry-connrefused --connect-timeout 10 "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$CHANNEL")"
 echo "Resolved $CHANNEL version $VERSION" | indent
 
 echo "Downloading Chrome" | indent
